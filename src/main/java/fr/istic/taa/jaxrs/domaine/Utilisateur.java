@@ -1,6 +1,8 @@
 package fr.istic.taa.jaxrs.domaine;
 
 import fr.istic.taa.jaxrs.utils.Role;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 
 import java.util.List;
 
@@ -22,14 +24,19 @@ public class Utilisateur   {
         this.role = role;
     }
 
+    @XmlElement(name = "id")
     public Long getId() {
         return id;
     }
 
+    @XmlElementWrapper(name = "tickets")
+    @XmlElement(name = "ticket")
     public List<Tickets> getTickets() {
         return tickets;
     }
 
+    @XmlElementWrapper(name = "comments")
+    @XmlElement(name = "comment")
     public List<Comments> getComments() {
         return comments;
     }
@@ -38,10 +45,12 @@ public class Utilisateur   {
         this.comments = comments;
     }
 
+    @XmlElement(name = "username")
     public String getUsername() {
         return username;
     }
 
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
@@ -54,6 +63,7 @@ public class Utilisateur   {
         this.tickets = tickets;
     }
 
+    @XmlElement(name = "role")
     public Role getRole() {
         return role;
     }

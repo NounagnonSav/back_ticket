@@ -1,6 +1,8 @@
 package fr.istic.taa.jaxrs.domaine;
 
 
+import jakarta.xml.bind.annotation.XmlElement;
+
 import java.sql.Date;
 
 public class Comments {
@@ -30,26 +32,32 @@ public class Comments {
 
     }
 
+    @XmlElement(name = "id")
     public Long getId() {
         return id;
     }
 
+    @XmlElement(name = "content")
     public String getContent() {
         return content;
     }
 
+    @XmlElement(name = "ticket")
     public Tickets getTicket() {
         return ticket;
     }
 
+    @XmlElement(name = "user_created")
     public Utilisateur getCreated_by() {
         return created_by;
     }
 
+    @XmlElement(name = "date_created")
     public Date getCreated_at() {
         return created_at;
     }
 
+    @XmlElement(name = "date_updated")
     public Date getUpdated_at() {
         return updated_at;
     }
