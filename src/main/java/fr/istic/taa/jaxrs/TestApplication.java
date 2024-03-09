@@ -19,7 +19,7 @@ package fr.istic.taa.jaxrs;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.istic.taa.jaxrs.rest.PetResource;
+import fr.istic.taa.jaxrs.rest.ProjectsResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -34,7 +34,7 @@ public class TestApplication extends Application {
         final Set<Class<?>> clazzes = new HashSet<Class<?>>();
 
         clazzes.add(OpenApiResource.class);
-        clazzes.add(PetResource.class);
+        clazzes.add(ProjectsResource.class);
 //        clazzes.add(AcceptHeaderOpenApiResource.class);
          
 
