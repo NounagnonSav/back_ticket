@@ -1,12 +1,13 @@
 package fr.istic.taa.jaxrs.domaine;
 
 import fr.istic.taa.jaxrs.utils.Role;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Utilisateur   {
+@Entity
+public class Utilisateur implements Serializable {
     private Long id;
     private String username;
     private String name;
@@ -24,19 +25,18 @@ public class Utilisateur   {
         this.role = role;
     }
 
-    @XmlElement(name = "id")
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    @XmlElementWrapper(name = "tickets")
-    @XmlElement(name = "ticket")
+    @ManyToMany(mappedBy = "assign_to")
     public List<Tickets> getTickets() {
         return tickets;
     }
 
-    @XmlElementWrapper(name = "comments")
-    @XmlElement(name = "comment")
+    @OneToMany(mappedBy = "created_by")
     public List<Comments> getComments() {
         return comments;
     }
@@ -45,12 +45,10 @@ public class Utilisateur   {
         this.comments = comments;
     }
 
-    @XmlElement(name = "username")
     public String getUsername() {
         return username;
     }
 
-    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
@@ -63,7 +61,7 @@ public class Utilisateur   {
         this.tickets = tickets;
     }
 
-    @XmlElement(name = "role")
+    @Enumerated(EnumType.STRING)
     public Role getRole() {
         return role;
     }

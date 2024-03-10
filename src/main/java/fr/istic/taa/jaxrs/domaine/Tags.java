@@ -1,13 +1,13 @@
 package fr.istic.taa.jaxrs.domaine;
 
+import jakarta.persistence.*;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-public class Tags {
+@Entity
+public class Tags implements Serializable {
     private Long id;
     private String name;
     private String description;
@@ -25,7 +25,8 @@ public class Tags {
         this.created_by = created_by;
     }
 
-    @XmlElement(name = "id")
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -38,28 +39,24 @@ public class Tags {
         this.created_at = created_at;
     }
 
-    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
 
-    @XmlElement(name = "description")
     public String getDescription() {
         return description;
     }
 
-    @XmlElement(name = "created_by")
+    @OneToOne
     public Utilisateur getCreated_by() {
         return created_by;
     }
 
-    @XmlElementWrapper(name = "tickets")
-    @XmlElement(name = "ticket")
+    @ManyToMany
     public List<Tickets> getTickets() {
         return tickets;
     }
 
-    @XmlElement(name = "created_at")
     public Date getCreated_at() {
         return created_at;
     }

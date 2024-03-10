@@ -1,19 +1,21 @@
 package fr.istic.taa.jaxrs.domaine;
 
 import fr.istic.taa.jaxrs.utils.State;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.persistence.*;
 
+
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-public class Tickets  {
+@Entity
+public class Tickets implements Serializable {
     private Long id;
     private String content;
     private String title;
     private List<Tags> tags;
     private List<Comments> comments;
-    private State state= State.OPEN;
+    private State state=State.OPEN;
     private Date milistone;
     private Date created_at;
     private Date updated_at;
@@ -32,23 +34,21 @@ public class Tickets  {
         this.project = project;
     }
 
-    @XmlElement(name = "id")
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    @XmlElement(name = "content")
     public String getContent() {
         return content;
     }
 
-    @XmlElement(name = "title")
     public String getTitle() {
         return title;
     }
 
-    @XmlElementWrapper(name = "comments")
-    @XmlElement(name = "comment")
+    @OneToMany(mappedBy = "ticket")
     public List<Comments> getComments() {
         return comments;
     }
@@ -57,44 +57,39 @@ public class Tickets  {
         this.comments = comments;
     }
 
-    @XmlElementWrapper(name = "tags")
-    @XmlElement(name = "tag")
+    @ManyToMany(mappedBy = "tickets")
     public List<Tags> getTags() {
         return tags;
     }
 
-    @XmlElement(name = "state")
+    @Enumerated(EnumType.STRING)
     public State getState() {
         return state;
     }
 
-    @XmlElement(name = "milistone")
     public Date getMilistone() {
         return milistone;
     }
 
-    @XmlElement(name = "date_created")
     public Date getCreated_at() {
         return created_at;
     }
 
-    @XmlElement(name = "date_updated")
     public Date getUpdated_at() {
         return updated_at;
     }
 
-    @XmlElement(name = "project")
+    @ManyToOne
     public Projects getProject() {
         return project;
     }
 
-    @XmlElement(name = "user_created")
+    @OneToOne
     public Utilisateur getCreated_by() {
         return created_by;
     }
 
-    @XmlElementWrapper(name = "users_assign")
-    @XmlElement(name = "user_assign")
+    @ManyToMany
     public List<Utilisateur> getAssign_to() {
         return assign_to;
     }

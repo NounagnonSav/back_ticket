@@ -1,12 +1,11 @@
 package fr.istic.taa.jaxrs.rest;
 
-import fr.istic.taa.jaxrs.domaine.Projects;
 import fr.istic.taa.jaxrs.domaine.Tickets;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
-@Path("tickets")
+@Path("/tickets")
 @Produces({"application/json", "application/xml"})
 public class TicketsResource {
 

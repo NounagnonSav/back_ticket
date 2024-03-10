@@ -1,13 +1,15 @@
 package fr.istic.taa.jaxrs.domaine;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
+import java.io.Serializable;
 import java.util.List;
 
-@XmlRootElement(name = "Projects")
-public class Projects {
+@Entity
+public class Projects implements Serializable {
     private Long id;
     private String name;
 
@@ -24,13 +26,13 @@ public class Projects {
         this.id = id;
     }
 
-    @XmlElement(name = "id")
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    @XmlElementWrapper(name = "tickets")
-    @XmlElement(name = "ticket")
+    @OneToMany(mappedBy = "project")
     public List<Tickets> getTicketsList() {
         return ticketsList;
     }
@@ -39,7 +41,6 @@ public class Projects {
         this.ticketsList = ticketsList;
     }
 
-    @XmlElement(name = "name")
     public String getName() {
         return name;
     }

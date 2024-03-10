@@ -1,11 +1,15 @@
 package fr.istic.taa.jaxrs.domaine;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
-import jakarta.xml.bind.annotation.XmlElement;
-
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Comments {
+@Entity
+public class Comments implements Serializable {
 
     private Long id;
     private String content;
@@ -32,32 +36,30 @@ public class Comments {
 
     }
 
-    @XmlElement(name = "id")
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    @XmlElement(name = "content")
     public String getContent() {
         return content;
     }
 
-    @XmlElement(name = "ticket")
+    @ManyToOne
     public Tickets getTicket() {
         return ticket;
     }
 
-    @XmlElement(name = "user_created")
+    @ManyToOne
     public Utilisateur getCreated_by() {
         return created_by;
     }
 
-    @XmlElement(name = "date_created")
     public Date getCreated_at() {
         return created_at;
     }
 
-    @XmlElement(name = "date_updated")
     public Date getUpdated_at() {
         return updated_at;
     }

@@ -1,12 +1,11 @@
 package fr.istic.taa.jaxrs.rest;
 
 import fr.istic.taa.jaxrs.domaine.Comments;
-import fr.istic.taa.jaxrs.domaine.Projects;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
-@Path("comment")
+@Path("/comments")
 @Produces({"application/json", "application/xml"})
 public class CommentsResource {
 

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
-@Path("Tags")
+@Path("/tags")
 @Produces({"application/json", "application/xml"})
 public class TagsResource {
     @GET
