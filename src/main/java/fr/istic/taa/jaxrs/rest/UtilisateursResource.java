@@ -14,7 +14,7 @@ public class UtilisateursResource {
 
     UtilisateurDao dao = new UtilisateurDao();
 
-    // endpoint pour affiche un utilisateur
+    // endpoint pour afficher un utilisateur
     @GET
     @Path("/{id}")
     public Response getUtilisateurById(@PathParam("id") Long utilisateurId)  {
