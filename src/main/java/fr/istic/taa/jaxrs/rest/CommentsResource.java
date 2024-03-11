@@ -28,7 +28,7 @@ public class CommentsResource {
 
     @GET
     @Path("/")
-    public Response getComment(Long commentId)  {
+    public Response getComment()  {
         List<Comments> comments = dao.findAll();
         if (comments == null || comments.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Aucun commentaire trouvé").build();

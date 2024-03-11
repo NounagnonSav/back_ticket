@@ -71,10 +71,12 @@ public class Tickets implements Serializable {
         return milistone;
     }
 
+    @Column(name = "created_at", updatable = false)
     public Date getCreated_at() {
         return created_at;
     }
 
+    @Column(name = "updated_at")
     public Date getUpdated_at() {
         return updated_at;
     }
@@ -137,5 +139,15 @@ public class Tickets implements Serializable {
 
     public void setAssign_to(List<Utilisateur> user) {
         this.assign_to = user;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created_at = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate // Méthode appelée avant la mise à jour de l'entité
+    protected void onUpdate() {
+        updated_at = new Date(System.currentTimeMillis());
     }
 }

@@ -19,10 +19,7 @@ package fr.istic.taa.jaxrs;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.istic.taa.jaxrs.rest.CommentsResource;
-import fr.istic.taa.jaxrs.rest.ProjectsResource;
-import fr.istic.taa.jaxrs.rest.TagsResource;
-import fr.istic.taa.jaxrs.rest.UtilisateursResource;
+import fr.istic.taa.jaxrs.rest.*;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -41,6 +38,8 @@ public class TestApplication extends Application {
         clazzes.add(ProjectsResource.class);
         clazzes.add(TagsResource.class);
         clazzes.add(UtilisateursResource.class);
+        clazzes.add(TicketsResource.class);
+        clazzes.add(SwaggerResource.class);
 //        clazzes.add(AcceptHeaderOpenApiResource.class);
          
 

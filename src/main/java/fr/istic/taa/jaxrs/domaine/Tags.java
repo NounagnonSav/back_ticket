@@ -57,6 +57,7 @@ public class Tags implements Serializable {
         return tickets;
     }
 
+    @Column(name = "created_at", updatable = false)
     public Date getCreated_at() {
         return created_at;
     }
@@ -75,5 +76,10 @@ public class Tags implements Serializable {
 
     public void setTickets(List<Tickets> tickets) {
         this.tickets = tickets;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created_at = new Date(System.currentTimeMillis());
     }
 }

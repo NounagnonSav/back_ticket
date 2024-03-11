@@ -1,0 +1,15 @@
+# Fichiers compilés
+*.class
+
+# Fichiers .jar générés par Maven ou Gradle
+*.jar
+
+# Dossier de dépendances téléchargées
+/target/
+/build/
+
+# Fichiers générés par l'IDE
+.idea/
+*.iml
+*.ipr
+*.iws

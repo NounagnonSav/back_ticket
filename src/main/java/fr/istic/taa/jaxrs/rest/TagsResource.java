@@ -26,10 +26,10 @@ public class TagsResource {
 
     @GET
     @Path("/")
-    public Response getTagId(Long tagId)  {
+    public Response getTags()  {
         List<Tags> tags = dao.findAll();
         if (tags == null || tags.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun tag trouvé").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Aucun tags trouvé").build();
         } else {
             return Response.ok().entity(tags).build();
         }

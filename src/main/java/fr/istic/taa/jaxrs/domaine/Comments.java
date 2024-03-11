@@ -1,9 +1,6 @@
 package fr.istic.taa.jaxrs.domaine;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -56,10 +53,12 @@ public class Comments implements Serializable {
         return created_by;
     }
 
+    @Column(name = "created_at", updatable = false)
     public Date getCreated_at() {
         return created_at;
     }
 
+    @Column(name = "updated_at")
     public Date getUpdated_at() {
         return updated_at;
     }
@@ -78,6 +77,16 @@ public class Comments implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        created_at = new Date(System.currentTimeMillis());
+    }
+
+    @PreUpdate // Méthode appelée avant la mise à jour de l'entité
+    protected void onUpdate() {
+        updated_at = new Date(System.currentTimeMillis());
     }
 
 }

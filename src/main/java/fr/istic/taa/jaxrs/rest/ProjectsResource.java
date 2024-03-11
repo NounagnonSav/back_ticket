@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+
 @Path("/project")
 @Produces({"application/json", "application/xml"})
 public class ProjectsResource {
@@ -26,8 +28,13 @@ public class ProjectsResource {
 
   @GET
   @Path("/")
-  public Projects getProject(Long projectId)  {
-      return new Projects();
+  public Response getProject()  {
+    List<Projects> projects = dao.findAll();
+    if (projects == null || projects.isEmpty()) {
+      return Response.status(Response.Status.NOT_FOUND).entity("Aucun projet trouvé").build();
+    } else {
+      return Response.ok().entity(projects).build();
+    }
   }
 
 
@@ -60,7 +67,7 @@ public class ProjectsResource {
     }
 
     // Update the existing field with the new value only if they are non-null in the object being updated
-      else {
+    if (updatedProject.getName() != null) {
       existingProjects.setName(updatedProject.getName());
     }
 

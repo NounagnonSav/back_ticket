@@ -26,7 +26,7 @@ public class TicketsResource {
 
     @GET
     @Path("/")
-    public Response getTicket(Long ticketId)  {
+    public Response getTicket()  {
         List<Tickets> tickets = dao.findAll();
         if (tickets == null || tickets.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Aucun ticket trouvé").build();
