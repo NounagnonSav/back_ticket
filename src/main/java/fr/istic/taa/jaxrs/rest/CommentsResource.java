@@ -1,15 +1,19 @@
 package fr.istic.taa.jaxrs.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import fr.istic.taa.jaxrs.dao.CommentsDao;
 import fr.istic.taa.jaxrs.domaine.Comments;
 import fr.istic.taa.jaxrs.domaine.Utilisateur;
+import fr.istic.taa.jaxrs.utils.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-@Path("/comments")
+@Path("/api/comments")
 @Produces({"application/json", "application/xml"})
 public class CommentsResource {
 
@@ -21,7 +25,9 @@ public class CommentsResource {
         // return comment
         Comments existingComments = dao.findOne(commentId);
         if (existingComments == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Commentaire non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.COMMENTS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
         return Response.ok().entity(existingComments).build();
     }
@@ -31,10 +37,20 @@ public class CommentsResource {
     public Response getComment()  {
         List<Comments> comments = dao.findAll();
         if (comments == null || comments.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun commentaire trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.COMMENTS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
         else {
-            return Response.ok().entity(comments).build();
+            JsonArray jsonArray = new Gson().toJsonTree(comments).getAsJsonArray();
+            // Créer l'objet JSON principal
+            JsonObject json = new JsonObject();
+            json.add("results", jsonArray);
+            json.addProperty("total_results", jsonArray.size());
+
+            // Convertir l'objet JSON en une chaîne de caractères
+            String jsonString = json.toString();
+            return Response.ok().entity(jsonString).build();
         }
     }
 
@@ -45,11 +61,13 @@ public class CommentsResource {
             @Parameter(description = "Comment object that needs to be added to the store", required = true) Comments comments) {
         // add comment
         if (comments == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("L'objet comments est null").build();
-        }
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, "L'objet comments est null, veuillez renseigné les champs");
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();        }
         dao.save(comments);
-
-        return Response.status(Response.Status.CREATED).entity("commentaire ajouté avec succès").build();
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "commentaire ajouté avec succès");
+        return Response.status(Response.Status.CREATED).entity(json.toString()).build();
     }
 
 
@@ -62,7 +80,9 @@ public class CommentsResource {
             @Parameter(description = "comment object that needs to be updated", required = true) Comments updateComment) {
         Comments existingComments = dao.findOne(commentId);
         if (existingComments == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("commentaire non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.COMMENTS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         // Update existing fields with new values only if they are non-null in the object being updated
@@ -82,12 +102,16 @@ public class CommentsResource {
             @Parameter(description = "ID of the comments to be deleted", required = true) @PathParam("id") Long commentId) {
         Comments existingComments = dao.findOne(commentId);
         if (existingComments == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Commentaire non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.COMMENTS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         dao.delete(existingComments); // Delete comment
 
-        return Response.ok().entity("Le commentaire est supprimé avec succès").build();
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "Le commentaire est supprimé avec succès");
+        return Response.ok().entity(json.toString()).build();
     }
 
 }
