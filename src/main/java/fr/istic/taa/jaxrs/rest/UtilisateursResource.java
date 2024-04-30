@@ -1,14 +1,18 @@
 package fr.istic.taa.jaxrs.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import fr.istic.taa.jaxrs.dao.UtilisateurDao;
 import fr.istic.taa.jaxrs.domaine.Utilisateur;
+import fr.istic.taa.jaxrs.utils.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-@Path("/utilisateur")
+@Path("/api/utilisateur")
 @Produces({"application/json", "application/xml"})
 public class UtilisateursResource {
 
@@ -21,8 +25,9 @@ public class UtilisateursResource {
         // return user
         Utilisateur existingUtilisateur = dao.findOne(utilisateurId);
         if (existingUtilisateur == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Utilisateur non trouvé").build();
-        }
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.USER_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();        }
         return Response.ok().entity(existingUtilisateur).build();
     }
 
@@ -32,9 +37,19 @@ public class UtilisateursResource {
     public Response getUtilisateur() {
         List<Utilisateur> utilisateurs = dao.findAll();
         if (utilisateurs == null || utilisateurs.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun utilisateur trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.USER_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         } else {
-            return Response.ok().entity(utilisateurs).build();
+            JsonArray jsonArray = new Gson().toJsonTree(utilisateurs).getAsJsonArray();
+            // Créer l'objet JSON principal
+            JsonObject json = new JsonObject();
+            json.add("results", jsonArray);
+            json.addProperty("total_results", jsonArray.size());
+
+            // Convertir l'objet JSON en une chaîne de caractères
+            String jsonString = json.toString();
+            return Response.ok().entity(jsonString).build();
         }
     }
 
@@ -45,11 +60,14 @@ public class UtilisateursResource {
             @Parameter(description = "Utilisateur object that needs to be added to the store", required = true) Utilisateur utilisateur) {
         // add user
         if (utilisateur == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("L'objet Utilisateur est null").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, "L'objet Utilisateur est null");
+            return Response.status(Response.Status.BAD_REQUEST).entity(json.toString()).build();
         }
         dao.save(utilisateur);
-
-        return Response.status(Response.Status.CREATED).entity("Utilisateur ajouté avec succès").build();
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "Utilisateur ajouté avec succès");
+        return Response.status(Response.Status.CREATED).entity(json.toString()).build();
 
     }
 
@@ -63,7 +81,9 @@ public class UtilisateursResource {
             @Parameter(description = "Utilisateur object that needs to be updated", required = true) Utilisateur updatedUtilisateur) {
         Utilisateur existingUtilisateur = dao.findOne(utilisateurId);
         if (existingUtilisateur == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Utilisateur non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.USER_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         // Mettre à jour les champs existants avec les nouvelles valeurs uniquement s'ils sont non null dans l'objet mis à jour
@@ -87,15 +107,21 @@ public class UtilisateursResource {
     // endpoint pour supprimer un utilisateur
     @DELETE
     @Path("/{id}")
+    @Consumes("application/json")
+    @Produces("application/json")
     public Response deleteUtilisateur(
             @Parameter(description = "ID of the utilisateur to be deleted", required = true) @PathParam("id") Long utilisateurId) {
         Utilisateur existingUtilisateur = dao.findOne(utilisateurId);
         if (existingUtilisateur == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Utilisateur non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.USER_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         dao.delete(existingUtilisateur); // Supprimer l'utilisateur de la base de données
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "Utilisateur supprimé avec succès");
 
-        return Response.ok().entity("Utilisateur supprimé avec succès").build();
+        return Response.ok().entity(json.toString()).build();
     }
 }

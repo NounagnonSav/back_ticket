@@ -1,5 +1,6 @@
 package fr.istic.taa.jaxrs;
 
+import fr.istic.taa.jaxrs.rest.CorsFilter;
 import io.undertow.Undertow;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 
@@ -19,11 +20,13 @@ public class RestServer {
 
         TestApplication ta = new TestApplication();
 
+        // Configurer les en-têtes CORS pour autoriser les requêtes depuis localhost:4200
+
         ut.deploy(ta);
 
         ut.start(
                 Undertow.builder()
-                        .addHttpListener(8080, "localhost")
+                        .addHttpListener(5000, "localhost")
 
         );
 

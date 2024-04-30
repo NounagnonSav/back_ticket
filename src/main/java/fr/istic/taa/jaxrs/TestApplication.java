@@ -40,6 +40,7 @@ public class TestApplication extends Application {
         clazzes.add(UtilisateursResource.class);
         clazzes.add(TicketsResource.class);
         clazzes.add(SwaggerResource.class);
+        clazzes.add(CorsFilter.class);
 //        clazzes.add(AcceptHeaderOpenApiResource.class);
          
 

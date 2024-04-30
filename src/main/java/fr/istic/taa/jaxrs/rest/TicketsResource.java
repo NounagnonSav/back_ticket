@@ -2,13 +2,18 @@ package fr.istic.taa.jaxrs.rest;
 
 import fr.istic.taa.jaxrs.dao.TicketsDao;
 import fr.istic.taa.jaxrs.domaine.Tickets;
+import fr.istic.taa.jaxrs.utils.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
-@Path("/tickets")
+@Path("/api/tickets")
 @Produces({"application/json", "application/xml"})
 public class TicketsResource {
 
@@ -19,7 +24,9 @@ public class TicketsResource {
         // return ticket
         Tickets existingTicket = dao.findOne(ticketId);
         if (existingTicket == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Ticket non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.TICKETS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
         return Response.ok().entity(existingTicket).build();
     }
@@ -29,9 +36,19 @@ public class TicketsResource {
     public Response getTicket()  {
         List<Tickets> tickets = dao.findAll();
         if (tickets == null || tickets.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun ticket trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.TICKETS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         } else {
-            return Response.ok().entity(tickets).build();
+            JsonArray jsonArray = new Gson().toJsonTree(tickets).getAsJsonArray();
+            // Créer l'objet JSON principal
+            JsonObject json = new JsonObject();
+            json.add("results", jsonArray);
+            json.addProperty("total_results", jsonArray.size());
+
+            // Convertir l'objet JSON en une chaîne de caractères
+            String jsonString = json.toString();
+            return Response.ok().entity(jsonString).build();
         }
     }
 
@@ -41,11 +58,15 @@ public class TicketsResource {
             @Parameter(description = "Ticket object that needs to be added to the store", required = true) Tickets tickets) {
         // add ticket
         if (tickets == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("L'objet ticket est null").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, "L'objet ticket est null");
+            return Response.status(Response.Status.BAD_REQUEST).entity(json.toString()).build();
         }
         dao.save(tickets);
 
-        return Response.status(Response.Status.CREATED).entity("ticket ajouté avec succès").build();
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "Le ticket a été ajouté avec succès");
+        return Response.status(Response.Status.CREATED).entity(json.toString()).build();
     }
 
     @PUT
@@ -57,7 +78,9 @@ public class TicketsResource {
             @Parameter(description = "Utilisateur object that needs to be updated", required = true) Tickets updateTicket) {
         Tickets existingTicket = dao.findOne(ticketId);
         if (existingTicket == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun ticket non trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.TICKETS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         // Update existing fields with new values only if they are non-null in the object being updated
@@ -85,11 +108,14 @@ public class TicketsResource {
             @Parameter(description = "ID of the ticket to be deleted", required = true) @PathParam("id") Long ticketId) {
         Tickets existingTicket = dao.findOne(ticketId);
         if (existingTicket == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Aucun ticket trouvé").build();
+            JsonObject json = new JsonObject();
+            json.addProperty(Constants.ERROR, Constants.TICKETS_NOT_FOUND);
+            return Response.status(Response.Status.NOT_FOUND).entity(json.toString()).build();
         }
 
         dao.delete(existingTicket); // Delete the ticket
-
-        return Response.ok().entity("Ticket supprimé avec succès").build();
+        JsonObject json = new JsonObject();
+        json.addProperty(Constants.MESSAGE, "Ticket supprimé avec succès");
+        return Response.ok().entity(json.toString()).build();
     }
 }
